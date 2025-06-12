@@ -14,6 +14,7 @@ import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { ProtectedRoute } from '../protected-route';
 
 const App = () => {
   const location = useLocation();
@@ -32,13 +33,21 @@ const App = () => {
         <Route path='*' element={<NotFound404 />} />
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-        <Route // TODO: protect
+        <Route
           path='/login'
-          element={<Login />}
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Login />
+            </ProtectedRoute>
+          }
         />
         <Route // TODO: protect
           path='/register'
-          element={<Register />}
+          element={
+            <ProtectedRoute onlyUnAuth>
+              <Register />
+            </ProtectedRoute>
+          }
         />
         <Route // TODO: protect
           path='/forgot-password'
@@ -77,7 +86,7 @@ const App = () => {
               </Modal>
             }
           />
-          <Route // TODO: modal
+          <Route
             path='/feed/:number'
             element={
               <Modal title='Информация о заказе' onClose={onModalClose}>

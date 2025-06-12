@@ -1,10 +1,4 @@
-import {
-  getFeedsApi,
-  getIngredientsApi,
-  loginUserApi,
-  orderBurgerApi,
-  TLoginData
-} from '@api';
+import { getFeedsApi, getIngredientsApi, orderBurgerApi } from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorItems, TIngredient, TOrder } from '@utils-types';
 
@@ -85,17 +79,6 @@ export const stellarBurgerSlice = createSlice({
         state.isLoading = false;
         state.orderData = action.payload.order;
       })
-      .addCase(fetchLoginUser.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchLoginUser.rejected, (state, action) => {
-        state.isLoading = false;
-        console.log(action);
-      })
-      .addCase(fetchLoginUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        console.log(action.payload);
-      })
       .addCase(fetchOrders.pending, (state) => {
         state.isLoading = true;
       })
@@ -118,11 +101,6 @@ export const fetchIngredients = createAsyncThunk(
 export const fetchNewOrder = createAsyncThunk(
   'orders/newOrder',
   async (data: string[]) => orderBurgerApi(data)
-);
-
-export const fetchLoginUser = createAsyncThunk(
-  'user/login',
-  async (data: TLoginData) => loginUserApi(data)
 );
 
 export const fetchOrders = createAsyncThunk('orders/getAll', async () =>
