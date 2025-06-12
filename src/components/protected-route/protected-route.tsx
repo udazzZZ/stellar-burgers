@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import { selectUser } from 'src/services/slices/userSlice';
+import { selectUser, selectUserIsLoading } from 'src/services/slices/userSlice';
 import { Preloader } from '../ui';
-import { selectIsLoading } from 'src/services/slices/stellarBurgerSlice';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
@@ -13,7 +12,7 @@ export const ProtectedRoute = ({
   onlyUnAuth,
   children
 }: ProtectedRouteProps) => {
-  const isLoading = useSelector(selectIsLoading);
+  const isLoading = useSelector(selectUserIsLoading);
   const user = useSelector(selectUser);
   const location = useLocation();
 

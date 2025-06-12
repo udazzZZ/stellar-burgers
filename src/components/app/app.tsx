@@ -15,8 +15,18 @@ import styles from './app.module.css';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route';
+import { useDispatch, useSelector } from 'src/services/store';
+import { useEffect } from 'react';
+import {
+  getUserThunk,
+  selectUserIsLoading
+} from 'src/services/slices/userSlice';
+import { Preloader } from '../ui';
 
 const App = () => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectUserIsLoading);
+
   const location = useLocation();
   const backgroundLocation = location.state?.background;
 
@@ -25,6 +35,14 @@ const App = () => {
   const onModalClose = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    dispatch(getUserThunk());
+  }, [dispatch]);
+
+  // if (isLoading) {
+  //   return <Preloader />;
+  // }
 
   return (
     <div className={styles.app}>
@@ -49,13 +67,21 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route // TODO: protect
+        <Route
           path='/forgot-password'
-          element={<ForgotPassword />}
+          element={
+            <ProtectedRoute>
+              <ForgotPassword />
+            </ProtectedRoute>
+          }
         />
-        <Route // TODO: protect
+        <Route
           path='/reset-password'
-          element={<ResetPassword />}
+          element={
+            <ProtectedRoute>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
         />
         <Route
           path='/profile'
@@ -65,9 +91,13 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route // TODO: protect
+        <Route
           path='/profile/orders'
-          element={<ProfileOrders />}
+          element={
+            <ProtectedRoute>
+              <ProfileOrders />
+            </ProtectedRoute>
+          }
         />
         <Route // TODO: modal
           path='/feed/:number'

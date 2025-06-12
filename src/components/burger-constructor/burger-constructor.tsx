@@ -16,10 +16,6 @@ export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
   const constructorItems = useSelector(selectConstructorItems);
 
-  console.log({
-    constructorItems
-  });
-
   const orderRequest = useSelector(selectOrderRequest);
 
   const orderModalData = useSelector(selectOrderData);
@@ -28,7 +24,7 @@ export const BurgerConstructor: FC = () => {
     if (!constructorItems.bun || orderRequest) return;
     dispatch(
       fetchNewOrder([
-        constructorItems?.bun?._id,
+        constructorItems.bun._id,
         ...constructorItems.ingredients.map((item) => item._id)
       ])
     );

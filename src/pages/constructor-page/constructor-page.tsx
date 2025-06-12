@@ -10,7 +10,6 @@ import {
   fetchIngredients,
   selectIsLoading
 } from 'src/services/slices/stellarBurgerSlice';
-import { getUserThunk } from 'src/services/slices/userSlice';
 
 export const ConstructorPage: FC = () => {
   const dispatch = useDispatch();
@@ -18,7 +17,6 @@ export const ConstructorPage: FC = () => {
 
   useEffect(() => {
     dispatch(fetchIngredients());
-    dispatch(getUserThunk());
   }, []);
 
   return (

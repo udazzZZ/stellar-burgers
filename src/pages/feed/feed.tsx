@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'src/services/store';
 
 export const Feed: FC = () => {
   const dispatch = useDispatch();
-  const orders: TOrder[] = useSelector(selectOrders);
+  const orders = useSelector(selectOrders);
 
   useEffect(() => {
     dispatch(fetchOrders());
@@ -20,5 +20,5 @@ export const Feed: FC = () => {
     return <Preloader />;
   }
 
-  <FeedUI orders={orders} handleGetFeeds={() => {}} />;
+  return <FeedUI orders={orders} handleGetFeeds={() => {}} />;
 };

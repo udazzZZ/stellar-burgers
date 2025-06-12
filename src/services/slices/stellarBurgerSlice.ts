@@ -1,6 +1,12 @@
-import { getFeedsApi, getIngredientsApi, orderBurgerApi } from '@api';
+import {
+  getFeedsApi,
+  getIngredientsApi,
+  getOrdersApi,
+  orderBurgerApi
+} from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TConstructorItems, TIngredient, TOrder } from '@utils-types';
+import { selectUser } from './userSlice';
 
 export type TInitialState = {
   ingredients: TIngredient[];
@@ -10,6 +16,7 @@ export type TInitialState = {
   orderRequest: boolean;
   errorText: string;
   orders: TOrder[];
+  userOrders: TOrder[];
 };
 
 export const initialState: TInitialState = {
@@ -22,7 +29,8 @@ export const initialState: TInitialState = {
   },
   orderRequest: false,
   errorText: '',
-  orders: []
+  orders: [],
+  userOrders: []
 };
 
 export const stellarBurgerSlice = createSlice({
@@ -61,7 +69,8 @@ export const stellarBurgerSlice = createSlice({
     selectConstructorItems: (state) => state.constructorItems,
     selectOrderRequest: (state) => state.orderRequest,
     selectErrorText: (state) => state.errorText,
-    selectOrders: (state) => state.orders
+    selectOrders: (state) => state.orders,
+    selectUserOrders: (state) => state.userOrders
   },
   extraReducers: (builder) => {
     builder
@@ -89,6 +98,17 @@ export const stellarBurgerSlice = createSlice({
       .addCase(fetchOrders.rejected, (state, action) => {
         state.isLoading = false;
         state.errorText = action.error.message || 'Failed to fetch orders';
+      })
+      .addCase(fetchUserOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchUserOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userOrders = action.payload;
+      })
+      .addCase(fetchUserOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.errorText = action.error.message || 'Failed to fetch user orders';
       });
   }
 });
@@ -107,6 +127,11 @@ export const fetchOrders = createAsyncThunk('orders/getAll', async () =>
   getFeedsApi()
 );
 
+export const fetchUserOrders = createAsyncThunk(
+  'orders/getUserOrders',
+  async () => getOrdersApi()
+);
+
 export const {
   selectIsLoading,
   selectIngredients,
@@ -114,7 +139,8 @@ export const {
   selectConstructorItems,
   selectOrderRequest,
   selectErrorText,
-  selectOrders
+  selectOrders,
+  selectUserOrders
 } = stellarBurgerSlice.selectors;
 export const { addIngredient, deleteIngredient, closeOrderRequest } =
   stellarBurgerSlice.actions;

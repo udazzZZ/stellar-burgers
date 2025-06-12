@@ -2,18 +2,20 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   getUserApi,
   loginUserApi,
+  logoutApi,
   registerUserApi,
   TLoginData,
-  TRegisterData
+  TRegisterData,
+  updateUserApi
 } from 'src/utils/burger-api';
-import { setCookie } from 'src/utils/cookie';
+import { deleteCookie, setCookie } from 'src/utils/cookie';
 import { TUser } from 'src/utils/types';
 
 export type TInitialState = {
   isAuth: boolean;
   isInit: boolean;
   user: TUser | null;
-  isLoading: boolean;
+  userIsLoading: boolean;
   errorText: string | null;
 };
 
@@ -21,7 +23,7 @@ export const initialState: TInitialState = {
   isAuth: false,
   isInit: false,
   user: null,
-  isLoading: false,
+  userIsLoading: false,
   errorText: null
 };
 
@@ -35,49 +37,80 @@ export const userSlice = createSlice({
   },
   selectors: {
     selectIsAuth: (state) => state.isAuth,
-    selectUser: (state) => state.user
+    selectUser: (state) => state.user,
+    selectUserIsLoading: (state) => state.userIsLoading
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchLoginUser.pending, (state) => {
-        state.isLoading = true;
+        state.userIsLoading = true;
       })
       .addCase(fetchLoginUser.rejected, (state, action) => {
-        state.isLoading = false;
+        state.userIsLoading = false;
         state.errorText = action.error.message || null;
       })
       .addCase(fetchLoginUser.fulfilled, (state, action) => {
         state.isAuth = true;
-        state.isLoading = false;
+        state.userIsLoading = false;
         setCookie('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(fetchRegisterUser.pending, (state) => {
-        state.isLoading = true;
+        state.userIsLoading = true;
       })
       .addCase(fetchRegisterUser.rejected, (state, action) => {
-        state.isLoading = false;
+        state.userIsLoading = false;
         state.errorText = action.error.message || null;
       })
       .addCase(fetchRegisterUser.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.userIsLoading = false;
       })
       .addCase(getUserThunk.pending, (state) => {
-        state.isLoading = true;
+        state.userIsLoading = true;
       })
       .addCase(getUserThunk.rejected, (state, action) => {
-        state.isLoading = false;
+        state.userIsLoading = false;
         state.isInit = true;
         state.errorText = action.error.message || null;
       })
       .addCase(getUserThunk.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.userIsLoading = false;
         state.isInit = true;
         state.user = {
           email: action.payload.user.email,
           name: action.payload.user.name
         };
         state.isAuth = true;
+      })
+      .addCase(fetchUpdateUser.pending, (state) => {
+        state.userIsLoading = true;
+      })
+      .addCase(fetchUpdateUser.rejected, (state, action) => {
+        state.userIsLoading = false;
+        state.errorText = action.error.message || null;
+      })
+      .addCase(fetchUpdateUser.fulfilled, (state, action) => {
+        state.userIsLoading = false;
+        if (action.payload.user) {
+          state.user = {
+            email: action.payload.user.email,
+            name: action.payload.user.name
+          };
+        }
+      })
+      .addCase(fetchUserLogout.pending, (state) => {
+        state.userIsLoading = true;
+      })
+      .addCase(fetchUserLogout.rejected, (state, action) => {
+        state.userIsLoading = false;
+        state.errorText = action.error.message || null;
+      })
+      .addCase(fetchUserLogout.fulfilled, (state) => {
+        state.isAuth = false;
+        state.userIsLoading = false;
+        state.user = null;
+        deleteCookie('accessToken');
+        localStorage.removeItem('refreshToken');
       });
   }
 });
@@ -96,6 +129,16 @@ export const getUserThunk = createAsyncThunk('user/get', async () =>
   getUserApi()
 );
 
+export const fetchUpdateUser = createAsyncThunk(
+  'user/update',
+  async (user: Partial<TRegisterData>) => updateUserApi(user)
+);
+
+export const fetchUserLogout = createAsyncThunk('user/logout', async () =>
+  logoutApi()
+);
+
 export const { init } = userSlice.actions;
-export const { selectIsAuth, selectUser } = userSlice.selectors;
+export const { selectIsAuth, selectUser, selectUserIsLoading } =
+  userSlice.selectors;
 export default userSlice.reducer;
