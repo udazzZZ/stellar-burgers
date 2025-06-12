@@ -41,7 +41,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route // TODO: protect
+        <Route
           path='/register'
           element={
             <ProtectedRoute onlyUnAuth>
@@ -57,9 +57,13 @@ const App = () => {
           path='/reset-password'
           element={<ResetPassword />}
         />
-        <Route // TODO: protect
+        <Route
           path='/profile'
-          element={<Profile />}
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
         />
         <Route // TODO: protect
           path='/profile/orders'

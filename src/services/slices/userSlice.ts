@@ -10,7 +10,7 @@ import { setCookie } from 'src/utils/cookie';
 import { TUser } from 'src/utils/types';
 
 export type TInitialState = {
-  isAuthChecked: boolean;
+  isAuth: boolean;
   isInit: boolean;
   user: TUser | null;
   isLoading: boolean;
@@ -18,7 +18,7 @@ export type TInitialState = {
 };
 
 export const initialState: TInitialState = {
-  isAuthChecked: false,
+  isAuth: false,
   isInit: false,
   user: null,
   isLoading: false,
@@ -34,7 +34,7 @@ export const userSlice = createSlice({
     }
   },
   selectors: {
-    selectIsAuthChecked: (state) => state.isAuthChecked,
+    selectIsAuth: (state) => state.isAuth,
     selectUser: (state) => state.user
   },
   extraReducers: (builder) => {
@@ -47,7 +47,7 @@ export const userSlice = createSlice({
         state.errorText = action.error.message || null;
       })
       .addCase(fetchLoginUser.fulfilled, (state, action) => {
-        state.isAuthChecked = true;
+        state.isAuth = true;
         state.isLoading = false;
         setCookie('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
@@ -77,7 +77,7 @@ export const userSlice = createSlice({
           email: action.payload.user.email,
           name: action.payload.user.name
         };
-        state.isAuthChecked = true;
+        state.isAuth = true;
       });
   }
 });
@@ -97,5 +97,5 @@ export const getUserThunk = createAsyncThunk('user/get', async () =>
 );
 
 export const { init } = userSlice.actions;
-export const { selectIsAuthChecked, selectUser } = userSlice.selectors;
+export const { selectIsAuth, selectUser } = userSlice.selectors;
 export default userSlice.reducer;

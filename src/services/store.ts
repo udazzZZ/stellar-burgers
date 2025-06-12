@@ -6,10 +6,12 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook
 } from 'react-redux';
+import userSlice from './slices/userSlice';
 
 const store = configureStore({
   reducer: {
-    stellarBurger: stellarBurgerSlice
+    stellarBurger: stellarBurgerSlice,
+    user: userSlice
   },
   devTools: process.env.NODE_ENV !== 'production'
 });
