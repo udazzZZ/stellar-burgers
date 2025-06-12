@@ -1,4 +1,5 @@
 import {
+  getFeedsApi,
   getIngredientsApi,
   loginUserApi,
   orderBurgerApi,
@@ -10,22 +11,24 @@ import { TConstructorItems, TIngredient, TOrder } from '@utils-types';
 export type TInitialState = {
   ingredients: TIngredient[];
   isLoading: boolean;
-  orderModalData: TOrder | null;
+  orderData: TOrder | null;
   constructorItems: TConstructorItems;
   orderRequest: boolean;
   errorText: string;
+  orders: TOrder[];
 };
 
 export const initialState: TInitialState = {
   ingredients: [],
   isLoading: false,
-  orderModalData: null,
+  orderData: null,
   constructorItems: {
     bun: null,
     ingredients: []
   },
   orderRequest: false,
-  errorText: ''
+  errorText: '',
+  orders: []
 };
 
 export const stellarBurgerSlice = createSlice({
@@ -49,17 +52,18 @@ export const stellarBurgerSlice = createSlice({
         );
     },
     makeOrderRequest(state, action: PayloadAction<TOrder>) {
-      state.orderModalData = action.payload;
+      state.orderData = action.payload;
       state.orderRequest = true;
     }
   },
   selectors: {
     selectIngredients: (state) => state.ingredients,
     selectIsLoading: (state) => state.isLoading,
-    selectOrderModalData: (state) => state.orderModalData,
+    selectOrderData: (state) => state.orderData,
     selectConstructorItems: (state) => state.constructorItems,
     selectOrderRequest: (state) => state.orderRequest,
-    selectErrorText: (state) => state.errorText
+    selectErrorText: (state) => state.errorText,
+    selectOrders: (state) => state.orders
   },
   extraReducers: (builder) => {
     builder
@@ -75,7 +79,7 @@ export const stellarBurgerSlice = createSlice({
       })
       .addCase(fetchNewOrder.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.orderModalData = action.payload.order;
+        state.orderData = action.payload.order;
       })
       .addCase(fetchLoginUser.pending, (state) => {
         state.isLoading = true;
@@ -87,6 +91,17 @@ export const stellarBurgerSlice = createSlice({
       .addCase(fetchLoginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         console.log(action.payload);
+      })
+      .addCase(fetchOrders.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.orders = action.payload.orders;
+      })
+      .addCase(fetchOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.errorText = action.error.message || 'Failed to fetch orders';
       });
   }
 });
@@ -106,13 +121,18 @@ export const fetchLoginUser = createAsyncThunk(
   async (data: TLoginData) => loginUserApi(data)
 );
 
+export const fetchOrders = createAsyncThunk('orders/getAll', async () =>
+  getFeedsApi()
+);
+
 export const {
   selectIsLoading,
   selectIngredients,
-  selectOrderModalData,
+  selectOrderData,
   selectConstructorItems,
   selectOrderRequest,
-  selectErrorText
+  selectErrorText,
+  selectOrders
 } = stellarBurgerSlice.selectors;
 export const { addIngredient, makeOrderRequest, deleteIngredient } =
   stellarBurgerSlice.actions;

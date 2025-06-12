@@ -4,7 +4,7 @@ import { BurgerConstructorUI } from '@ui';
 import { useSelector } from 'react-redux';
 import {
   selectConstructorItems,
-  selectOrderModalData,
+  selectOrderData,
   selectOrderRequest
 } from 'src/services/slices/stellarBurgerSlice';
 
@@ -17,7 +17,7 @@ export const BurgerConstructor: FC = () => {
 
   const orderRequest = useSelector(selectOrderRequest);
 
-  const orderModalData = useSelector(selectOrderModalData);
+  const orderModalData = useSelector(selectOrderData);
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
