@@ -9,11 +9,15 @@ import {
   selectOrderData,
   selectOrderRequest
 } from 'src/services/slices/stellarBurgerSlice';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'src/services/store';
+import { selectIsAuth } from 'src/services/slices/userSlice';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
+  const isAuth = useSelector(selectIsAuth);
+  const navigate = useNavigate();
+
   const constructorItems = useSelector(selectConstructorItems);
 
   const orderRequest = useSelector(selectOrderRequest);
@@ -22,6 +26,12 @@ export const BurgerConstructor: FC = () => {
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+    if (!isAuth) {
+      navigate('/login', {
+        state: { from: '/constructor' }
+      });
+      return;
+    }
     dispatch(
       fetchNewOrder([
         constructorItems.bun._id,
