@@ -77,6 +77,14 @@ const App = () => {
               </Modal>
             }
           />
+          <Route // TODO: modal
+            path='/feed/:number'
+            element={
+              <Modal title='Информация о заказе' onClose={onModalClose}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
         </Routes>
       )}
     </div>

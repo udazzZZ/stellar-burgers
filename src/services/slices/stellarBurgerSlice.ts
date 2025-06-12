@@ -51,9 +51,13 @@ export const stellarBurgerSlice = createSlice({
           (_, index) => index !== ingredientIndex
         );
     },
-    makeOrderRequest(state, action: PayloadAction<TOrder>) {
-      state.orderData = action.payload;
-      state.orderRequest = true;
+    closeOrderRequest(state) {
+      state.orderRequest = false;
+      state.orderData = null;
+      state.constructorItems = {
+        bun: null,
+        ingredients: []
+      };
     }
   },
   selectors: {
@@ -134,6 +138,6 @@ export const {
   selectErrorText,
   selectOrders
 } = stellarBurgerSlice.selectors;
-export const { addIngredient, makeOrderRequest, deleteIngredient } =
+export const { addIngredient, deleteIngredient, closeOrderRequest } =
   stellarBurgerSlice.actions;
 export default stellarBurgerSlice.reducer;
