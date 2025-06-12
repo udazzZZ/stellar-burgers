@@ -5,7 +5,12 @@ import {
   orderBurgerApi
 } from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TConstructorItems, TIngredient, TOrder } from '@utils-types';
+import {
+  TConstructorIngredient,
+  TConstructorItems,
+  TIngredient,
+  TOrder
+} from '@utils-types';
 import { selectUser } from './userSlice';
 
 export type TInitialState = {
@@ -60,6 +65,30 @@ export const stellarBurgerSlice = createSlice({
         bun: null,
         ingredients: []
       };
+    },
+    moveUpIngredient(state, action: PayloadAction<TConstructorIngredient>) {
+      const ingredients = state.constructorItems.ingredients;
+      const index = ingredients.findIndex(
+        (item) => item._id === action.payload._id
+      );
+      if (index > 0) {
+        [ingredients[index - 1], ingredients[index]] = [
+          ingredients[index],
+          ingredients[index - 1]
+        ];
+      }
+    },
+    moveDownIngredient(state, action: PayloadAction<TConstructorIngredient>) {
+      const ingredients = state.constructorItems.ingredients;
+      const index = ingredients.findIndex(
+        (item) => item._id === action.payload._id
+      );
+      if (index !== -1 && index < ingredients.length - 1) {
+        [ingredients[index], ingredients[index + 1]] = [
+          ingredients[index + 1],
+          ingredients[index]
+        ];
+      }
     }
   },
   selectors: {
@@ -142,6 +171,11 @@ export const {
   selectOrders,
   selectUserOrders
 } = stellarBurgerSlice.selectors;
-export const { addIngredient, deleteIngredient, closeOrderRequest } =
-  stellarBurgerSlice.actions;
+export const {
+  addIngredient,
+  deleteIngredient,
+  closeOrderRequest,
+  moveDownIngredient,
+  moveUpIngredient
+} = stellarBurgerSlice.actions;
 export default stellarBurgerSlice.reducer;
