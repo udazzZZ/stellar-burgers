@@ -39,6 +39,15 @@ export const stellarBurgerSlice = createSlice({
         state.constructorItems.ingredients.push(action.payload);
       }
     },
+    deleteIngredient(state, action: PayloadAction<TIngredient>) {
+      const ingredientIndex = state.constructorItems.ingredients.findIndex(
+        (item) => item._id === action.payload._id
+      );
+      state.constructorItems.ingredients =
+        state.constructorItems.ingredients.filter(
+          (_, index) => index !== ingredientIndex
+        );
+    },
     makeOrderRequest(state, action: PayloadAction<TOrder>) {
       state.orderModalData = action.payload;
       state.orderRequest = true;
@@ -105,5 +114,6 @@ export const {
   selectOrderRequest,
   selectErrorText
 } = stellarBurgerSlice.selectors;
-export const { addIngredient, makeOrderRequest } = stellarBurgerSlice.actions;
+export const { addIngredient, makeOrderRequest, deleteIngredient } =
+  stellarBurgerSlice.actions;
 export default stellarBurgerSlice.reducer;
