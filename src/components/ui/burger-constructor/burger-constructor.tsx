@@ -38,16 +38,14 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
     )}
     <ul className={styles.elements}>
       {constructorItems.ingredients.length > 0 ? (
-        constructorItems.ingredients.map(
-          (item: TConstructorIngredient, index: number) => (
-            <BurgerConstructorElement
-              ingredient={item}
-              index={index}
-              totalItems={constructorItems.ingredients.length}
-              key={item.id}
-            />
-          )
-        )
+        constructorItems.ingredients.map((item, index) => (
+          <BurgerConstructorElement
+            ingredient={{ ...item, id: item._id }}
+            index={index}
+            totalItems={constructorItems.ingredients.length}
+            key={item._id}
+          />
+        ))
       ) : (
         <div
           className={`${styles.noBuns} ml-8 mb-4 mr-5 text text_type_main-default`}
