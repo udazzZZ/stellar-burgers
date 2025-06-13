@@ -19,7 +19,7 @@ export const IngredientDetails: FC = () => {
     if (!ingredientData) {
       dispatch(fetchIngredients());
     }
-  }, []);
+  }, [ingredientData]);
 
   if (!ingredientData) {
     return <Preloader />;

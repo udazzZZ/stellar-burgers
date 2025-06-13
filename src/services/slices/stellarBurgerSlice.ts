@@ -11,7 +11,11 @@ import {
   TIngredient,
   TOrder
 } from '@utils-types';
-import { selectUser } from './userSlice';
+
+export type TFeed = {
+  total: number;
+  totalToday: number;
+};
 
 export type TInitialState = {
   ingredients: TIngredient[];
@@ -22,6 +26,7 @@ export type TInitialState = {
   errorText: string;
   orders: TOrder[];
   userOrders: TOrder[];
+  feed: TFeed | null;
 };
 
 export const initialState: TInitialState = {
@@ -35,7 +40,8 @@ export const initialState: TInitialState = {
   orderRequest: false,
   errorText: '',
   orders: [],
-  userOrders: []
+  userOrders: [],
+  feed: null
 };
 
 export const stellarBurgerSlice = createSlice({
@@ -60,7 +66,6 @@ export const stellarBurgerSlice = createSlice({
     },
     closeOrderRequest(state) {
       state.orderRequest = false;
-      state.orderData = null;
       state.constructorItems = {
         bun: null,
         ingredients: []
@@ -99,7 +104,8 @@ export const stellarBurgerSlice = createSlice({
     selectOrderRequest: (state) => state.orderRequest,
     selectErrorText: (state) => state.errorText,
     selectOrders: (state) => state.orders,
-    selectUserOrders: (state) => state.userOrders
+    selectUserOrders: (state) => state.userOrders,
+    selectFeed: (state) => state.feed
   },
   extraReducers: (builder) => {
     builder
@@ -113,9 +119,8 @@ export const stellarBurgerSlice = createSlice({
       .addCase(fetchNewOrder.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchNewOrder.fulfilled, (state, action) => {
+      .addCase(fetchNewOrder.fulfilled, (state) => {
         state.isLoading = false;
-        state.orderData = action.payload.order;
       })
       .addCase(fetchOrders.pending, (state) => {
         state.isLoading = true;
@@ -123,6 +128,10 @@ export const stellarBurgerSlice = createSlice({
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.orders = action.payload.orders;
+        state.feed = {
+          total: action.payload.total,
+          totalToday: action.payload.totalToday
+        };
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.isLoading = false;
@@ -169,7 +178,8 @@ export const {
   selectOrderRequest,
   selectErrorText,
   selectOrders,
-  selectUserOrders
+  selectUserOrders,
+  selectFeed
 } = stellarBurgerSlice.selectors;
 export const {
   addIngredient,
