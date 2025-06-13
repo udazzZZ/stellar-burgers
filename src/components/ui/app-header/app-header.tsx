@@ -31,7 +31,9 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
           <Link
             to='/feed'
             className={
-              location.pathname === '/feed' ? styles.link_active : styles.link
+              location.pathname.startsWith('/feed')
+                ? styles.link_active
+                : styles.link
             }
           >
             <p className='text text_type_main-default ml-2'>Лента заказов</p>
@@ -46,7 +48,9 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
         <Link
           to='/profile'
           className={
-            location.pathname === '/profile' ? styles.link_active : styles.link
+            location.pathname.startsWith('/profile')
+              ? styles.link_active
+              : styles.link
           }
         >
           <p className='text text_type_main-default ml-2'>
