@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
+  forgotPasswordApi,
   getUserApi,
   loginUserApi,
   logoutApi,
   registerUserApi,
+  resetPasswordApi,
   TLoginData,
   TRegisterData,
   updateUserApi
@@ -111,6 +113,16 @@ export const userSlice = createSlice({
         state.user = null;
         deleteCookie('accessToken');
         localStorage.removeItem('refreshToken');
+      })
+      .addCase(fetchPasswordForgot.pending, (state) => {
+        state.userIsLoading = true;
+      })
+      .addCase(fetchPasswordForgot.rejected, (state, action) => {
+        state.userIsLoading = false;
+        state.errorText = action.error.message || null;
+      })
+      .addCase(fetchPasswordForgot.fulfilled, (state) => {
+        state.userIsLoading = false;
       });
   }
 });
@@ -136,6 +148,16 @@ export const fetchUpdateUser = createAsyncThunk(
 
 export const fetchUserLogout = createAsyncThunk('user/logout', async () =>
   logoutApi()
+);
+
+export const fetchPasswordForgot = createAsyncThunk(
+  'user/passwordForgot',
+  async (email: string) => forgotPasswordApi({ email: email })
+);
+
+export const fetchPasswordReset = createAsyncThunk(
+  'user/passwordReset',
+  async (data: { password: string; token: string }) => resetPasswordApi(data)
 );
 
 export const { init } = userSlice.actions;
