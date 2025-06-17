@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient, TOrder } from '@utils-types';
@@ -7,27 +7,40 @@ import {
   fetchIngredients,
   fetchOrders,
   selectIngredients,
+  selectIsLoading,
   selectOrders
 } from 'src/services/slices/stellarBurgerSlice';
 import { useParams } from 'react-router-dom';
+import { NotFound404 } from 'src/pages/not-fount-404';
 
 export const OrderInfo: FC = () => {
   const dispatch = useDispatch();
   const { number } = useParams();
   const orderNumber = Number(number);
+  const [dataFetched, setDataFetched] = useState(false);
 
   const orders: TOrder[] = useSelector(selectOrders);
   const orderData: TOrder | undefined = orders?.find(
     (order) => order.number === orderNumber
   );
   const ingredients: TIngredient[] = useSelector(selectIngredients);
+  const isLoading = useSelector(selectIsLoading);
 
   useEffect(() => {
-    if (!orderData) {
-      dispatch(fetchOrders());
-      dispatch(fetchIngredients());
-    }
-  }, [dispatch, orderData]);
+    const fetchData = async () => {
+      if (!orders.length || !ingredients.length) {
+        await Promise.all([
+          dispatch(fetchOrders()),
+          dispatch(fetchIngredients())
+        ]);
+        setDataFetched(true);
+      } else {
+        setDataFetched(true);
+      }
+    };
+
+    fetchData();
+  }, [dispatch, orders.length, ingredients.length]);
 
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
@@ -70,9 +83,17 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) {
+  if (isLoading) {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  if (dataFetched && !orderData) {
+    return <NotFound404 />;
+  }
+
+  if (orderInfo) {
+    return <OrderInfoUI orderInfo={orderInfo} />;
+  }
+
+  return <Preloader />;
 };
