@@ -70,6 +70,7 @@ export const stellarBurgerSlice = createSlice({
         bun: null,
         ingredients: []
       };
+      state.orderData = null;
     },
     moveUpIngredient(state, action: PayloadAction<TConstructorIngredient>) {
       const ingredients = state.constructorItems.ingredients;
