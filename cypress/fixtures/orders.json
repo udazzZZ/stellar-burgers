@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "orders": [
+    {
+      "_id": "order-id-1",
+      "ingredients": [
+        "60d3b41abdacab0026a733c6",
+        "60d3b41abdacab0026a733c8",
+        "60d3b41abdacab0026a733cd"
+      ],
+      "status": "done",
+      "name": "Тестовый бургер",
+      "createdAt": "2023-01-01T12:00:00.000Z",
+      "updatedAt": "2023-01-01T12:00:00.000Z",
+      "number": 12345
+    }
+  ],
+  "total": 1,
+  "totalToday": 1
+}
