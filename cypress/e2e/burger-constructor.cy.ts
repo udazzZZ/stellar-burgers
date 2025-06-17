@@ -1,9 +1,7 @@
 const API_URL = Cypress.env('BURGER_API_URL');
 
 // Игнорировать необработанные исключения
-Cypress.on('uncaught:exception', () => {
-  return false;
-});
+Cypress.on('uncaught:exception', () => false);
 
 beforeEach(() => {
   // Очистка localStorage и cookies
@@ -23,17 +21,6 @@ beforeEach(() => {
       },
       ingredients
     ).as('getIngredients');
-  });
-
-  // Перехват запроса заказов
-  cy.fixture('orders.json').then((orders) => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: `${API_URL}/orders/all`
-      },
-      orders
-    ).as('getOrders');
   });
 
   // Перехват запроса данных пользователя
