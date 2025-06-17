@@ -3,14 +3,14 @@ import {
   getIngredientsApi,
   getOrdersApi,
   orderBurgerApi
-} from '@api';
+} from '../../utils/burger-api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   TConstructorIngredient,
   TConstructorItems,
   TIngredient,
   TOrder
-} from '@utils-types';
+} from '../../utils/types';
 
 export type TFeed = {
   total: number;
@@ -119,8 +119,9 @@ export const stellarBurgerSlice = createSlice({
       .addCase(fetchNewOrder.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchNewOrder.fulfilled, (state) => {
+      .addCase(fetchNewOrder.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.orderData = action.payload.order;
       })
       .addCase(fetchOrders.pending, (state) => {
         state.isLoading = true;
