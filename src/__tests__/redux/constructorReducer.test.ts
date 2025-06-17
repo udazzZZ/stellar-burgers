@@ -51,57 +51,49 @@ describe('Constructor Reducer', () => {
     image_mobile: 'main_mobile.png'
   };
 
-  it('should handle adding a bun ingredient', () => {
+  it('Должен корректно добавлять булку', () => {
     const nextState = reducer(initialState, addIngredient(bunMock));
 
     expect(nextState.constructorItems.bun).toEqual(bunMock);
   });
 
-  it('should handle adding a non-bun ingredient', () => {
+  it('Должен корректно добавлять начинку', () => {
     const nextState = reducer(initialState, addIngredient(sauceMock));
 
     expect(nextState.constructorItems.ingredients).toHaveLength(1);
     expect(nextState.constructorItems.ingredients[0]).toEqual(sauceMock);
   });
 
-  it('should handle deleting an ingredient', () => {
-    // First add two ingredients
+  it('Должен корректно удалять ингредиент', () => {
     let state = reducer(initialState, addIngredient(sauceMock));
     state = reducer(state, addIngredient(mainMock));
 
     expect(state.constructorItems.ingredients).toHaveLength(2);
 
-    // Then delete one
     const nextState = reducer(state, deleteIngredient(sauceMock));
 
     expect(nextState.constructorItems.ingredients).toHaveLength(1);
     expect(nextState.constructorItems.ingredients[0]).toEqual(mainMock);
   });
 
-  it('should handle moving an ingredient up', () => {
-    // Add two ingredients
+  it('Должен корректно перемещать ингредиент вверх', () => {
     let state = reducer(initialState, addIngredient(sauceMock));
     state = reducer(state, addIngredient(mainMock));
 
-    // Move the second ingredient (mainMock) up
     const mainMockWithId = { ...mainMock, id: mainMock._id };
     const nextState = reducer(state, moveUpIngredient(mainMockWithId));
 
-    // Now mainMock should be at index 0, and sauceMock at index 1
     expect(nextState.constructorItems.ingredients[0]).toEqual(mainMock);
     expect(nextState.constructorItems.ingredients[1]).toEqual(sauceMock);
   });
 
-  it('should handle moving an ingredient down', () => {
-    // Add two ingredients
+  it('Должен корректно перемещать ингредиент вниз', () => {
     let state = reducer(initialState, addIngredient(sauceMock));
     state = reducer(state, addIngredient(mainMock));
 
-    // Move the first ingredient (sauceMock) down
     const sauceMockWithId = { ...sauceMock, id: sauceMock._id };
     const nextState = reducer(state, moveDownIngredient(sauceMockWithId));
 
-    // Now mainMock should be at index 0, and sauceMock at index 1
     expect(nextState.constructorItems.ingredients[0]).toEqual(mainMock);
     expect(nextState.constructorItems.ingredients[1]).toEqual(sauceMock);
   });

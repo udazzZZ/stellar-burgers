@@ -5,7 +5,7 @@ import stellarBurgerSlice, {
 import userSlice from '../../services/slices/userSlice';
 
 describe('Root Reducer', () => {
-  it('should properly initialize with default state', () => {
+  it('Должен корректно инициализироваться с начальным состоянием', () => {
     const store = configureStore({
       reducer: {
         stellarBurger: stellarBurgerSlice,
@@ -15,13 +15,27 @@ describe('Root Reducer', () => {
 
     const state = store.getState();
 
-    // Check that stellarBurger slice is initialized properly
     expect(state.stellarBurger).toEqual(burgerInitialState);
 
-    // Check that user slice is initialized
     expect(state.user).toBeDefined();
 
-    // Check that store has the expected structure
     expect(Object.keys(state)).toEqual(['stellarBurger', 'user']);
+  });
+
+  it('Должен вернуть начальное состояние при вызове с undefined-состоянием и неизвестным экшеном', () => {
+    const store = configureStore({
+      reducer: {
+        stellarBurger: stellarBurgerSlice,
+        user: userSlice
+      }
+    });
+
+    // Вызываем dispatch с неизвестным экшеном
+    store.dispatch({ type: 'UNKNOWN_ACTION' });
+
+    // Проверяем, что состояние соответствует начальному
+    const state = store.getState();
+    expect(state.stellarBurger).toEqual(burgerInitialState);
+    expect(state.user).toBeDefined();
   });
 });
