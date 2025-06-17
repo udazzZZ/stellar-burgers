@@ -9,9 +9,9 @@ import {
   TLoginData,
   TRegisterData,
   updateUserApi
-} from 'src/utils/burger-api';
-import { deleteCookie, setCookie } from 'src/utils/cookie';
-import { TUser } from 'src/utils/types';
+} from '../../utils/burger-api';
+import { deleteCookie, setCookie } from '../../utils/cookie';
+import { TUser } from '../../utils/types';
 
 export type TInitialState = {
   isAuth: boolean;
